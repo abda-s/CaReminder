@@ -4,25 +4,25 @@
  *
  * @format
  */
-
-import React from 'react';
+import React from 'react'
 import {
   SafeAreaView,
-  StatusBar,
   Text,
+  View,
+} from 'react-native'
 
-} from 'react-native';
+export const App = () => {
 
-
-function App(){
   return (
-    <SafeAreaView>
-      <StatusBar/>
-      <Text> Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem eos rerum ipsa. Tempora dolorum magni similique corrupti quo, beatae minima qui enim soluta tempore omnis fugiat fuga animi ipsum temporibus. </Text>
-    </SafeAreaView>
-  );
-}
+    <View>
+      <SafeAreaView>
 
+        <Text>wow</Text>
+
+      </SafeAreaView>
+    </View>
+  )
+}
 
 
 export default App;
