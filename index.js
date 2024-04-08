@@ -9,6 +9,9 @@ const PORT = dotenv.PORT;
 app.use(express.json());
 app.use(cors())
 
+const AuthsRouter = require("./routes/Auth");
+app.use("/auth", AuthsRouter);
+
 db.sequelize.sync().then(() => {
     app.listen(PORT, () => {
         console.log(`server running on http://localhost:${PORT}`)
