@@ -98,19 +98,19 @@ router.post('/signup', async (req, res) => {
         // Check if the username is valid
         const { isValid: usernameIsValid, errorMessage: usernameErrorMessage } = await isUsernameValid(username);
         if (!usernameIsValid) {
-            return res.status(400).json({ error: usernameErrorMessage });
+            return res.json({ error: usernameErrorMessage });
         }
 
         // Check if the password is strong
         const { isValid, errorMessage } = await isPasswordStrong(password);
         if (!isValid) {
-            return res.status(400).json({ error: errorMessage });
+            return res.json({ error: errorMessage });
         }
 
         // check if the email is valid
         const validEmail = await validator.isEmail(email);
         if(!validEmail){
-            return res.status(400).json({error: "invalid email"})
+            return res.json({error: "invalid email"})
         }
 
         // Hash the password
