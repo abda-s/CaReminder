@@ -4,71 +4,29 @@
  *
  * @format
  */
-import React, { useState } from 'react'
-import {
-  SafeAreaView,
-  Text,
-  View,
-  TextInput,
-  Button,
-} from 'react-native'
+import React from 'react'
 
-import axios from 'axios';
-import { logger } from "react-native-logs";
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Signup from './screens/Signup';
+import Signin from './screens/Signin';
+import Home from './screens/Home';
 
-const baseUrl = 'http://10.0.2.2:3001';
+const Stack = createNativeStackNavigator();
 
 export const App = () => {
-  const log = logger.createLogger();
 
-  const [username, setUsername] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
 
-  const signup = () => {
-    const data = { username: username, email: email, password: password }
-    axios
-    .post(`${baseUrl}/auth/signup`, data)
-    .then((response)=>{
-      console.log(response.data)
-      log.info(response.data)
-    }).catch((error)=>{
-      console.log(error)
-    })
-  }
+
   return (
-    <View>
-      <SafeAreaView>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Signin">
+      <Stack.Screen name="Signin" component={Signin} />
+        <Stack.Screen name="Signup" component={Signup} />
+        <Stack.Screen name="Home" component={Home} />
 
-        <Text>wow</Text>
-        <TextInput
-          onChangeText={setUsername}
-          value={username}
-          placeholder="username"
-          keyboardType="default"
-        />
-        <TextInput
-          onChangeText={setEmail}
-          value={email}
-          placeholder="email"
-          keyboardType="email-address"
-        />
-        <TextInput
-          onChangeText={setPassword}
-          value={password}
-          secureTextEntry={true}
-          placeholder="password"
-          keyboardType="default"
-        />
-        <Button
-          onPress={signup}
-          title="signup"
-          color="#841584"
-          accessibilityLabel="Learn more about this purple button"
-        />
-
-      </SafeAreaView>
-    </View>
+      </Stack.Navigator>
+    </NavigationContainer>
   )
 }
 
