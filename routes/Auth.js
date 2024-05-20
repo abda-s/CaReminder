@@ -7,7 +7,7 @@ const { sign } = require("jsonwebtoken")
 const { users } = require("../models")
 
 var validator = require('validator');
-
+const JWT_secret = 'ifviuhaefgiauefhvpaiufg'
 
 const isPasswordStrong = (password) => {
     // Define criteria for a strong password (e.g., minimum length, presence of special characters, etc.)
@@ -109,8 +109,8 @@ router.post('/signup', async (req, res) => {
 
         // check if the email is valid
         const validEmail = await validator.isEmail(email);
-        if(!validEmail){
-            return res.json({error: "invalid email"})
+        if (!validEmail) {
+            return res.json({ error: "invalid email" })
         }
 
         // Hash the password
@@ -120,7 +120,7 @@ router.post('/signup', async (req, res) => {
         await users.create({
             username: username,
             password: hashedPassword,
-            email:email
+            email: email
         });
 
         res.json("success");
@@ -130,4 +130,32 @@ router.post('/signup', async (req, res) => {
     }
 })
 
+router.post('/login', async (req, res) => {
+    try {
+        const { username, password } = req.body;
+
+        const existingUser = await users.findOne({ where: { username: username } });
+
+        if (!existingUser) {
+            return res.json({ error: "user does not exist" });
+        }
+
+        const isMatch = await bcrypt.compare(password, existingUser.password);
+        
+        if (!isMatch) {
+            return res.json({ error: "Invalid password" });
+        }
+
+        const token = sign(
+            { email: existingUser.email, username: existingUser.username },
+            JWT_secret);
+
+        return res.json({ status: "ok", token: token });
+
+    } catch (err) {
+        console.error("Error creating user:", err);
+        res.status(500).json({ error: `Failed to sign: ${err.message}` });
+
+    }
+})
 module.exports = router;
