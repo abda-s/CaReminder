@@ -6,7 +6,7 @@ import {
 } from 'react-native'
 import axios from 'axios';
 import { logger } from "react-native-logs";
-import AsyncStorage from '@react-native-async-storage/async-storage' ;
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const baseUrl = 'http://10.0.2.2:3001';
 
@@ -21,14 +21,16 @@ const Signin = ({ navigation }) => {
     const [password, setPassword] = useState('')
 
     const signin = () => {
-
+        // const value = await AsyncStorage.getItem('my-key');
         const data = { username: username, password: password }
         axios
             .post(`${baseUrl}/auth/login`, data)
             .then((response) => {
-                log.info(response.data)
-                AsyncStorage.setItem("token",response.data.token)
+                // log.info(response.data)
+                
+                // log.info(value)
                 if (response.data.status == "ok") {
+                    AsyncStorage.setItem('token', response.data.token);
                     navigation.navigate('Home')
                 }
             }).catch((error) => {
