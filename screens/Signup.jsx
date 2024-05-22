@@ -23,6 +23,8 @@ function Signup({ navigation }) {
             .post(`${baseUrl}/auth/signup`, data)
             .then((response) => {
                 log.info(response.data)
+                navigation.navigate('Signin')
+
             }).catch((error) => {
                 log.info(error)
             })
