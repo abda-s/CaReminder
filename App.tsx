@@ -16,8 +16,7 @@ import Signup from './screens/Signup';
 import Signin from './screens/Signin';
 import Home from './screens/Home';
 import Add from './screens/Add';
-import { View } from 'react-native';
-
+import Calendar from './screens/Calendar';
 const Stack = createNativeStackNavigator();
 
 
@@ -58,6 +57,7 @@ export const App = () => {
             <>
               <Stack.Screen name="Home" component={Home} />
               <Stack.Screen name="Add" component={Add} />
+              <Stack.Screen name="Calendar" component={Calendar} />
             </>
           ) : (
             <>
