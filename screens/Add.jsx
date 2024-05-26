@@ -201,7 +201,7 @@ function Add() {
                                     </TouchableOpacity>
                                 </View>
                                 <View style={styles.schuleTimeChild}>
-                                    <Text style={styles.endDateText}>{input.timeText}</Text>
+                                    <Text style={[styles.endDateText,styles.schuleTimeText]}>{input.timeText}</Text>
                                 </View>
                             </View>
                             {input.showTime && (
@@ -229,11 +229,14 @@ function Add() {
                                 keyboardType="number-pad"
                             />
                         </View>
-                        {index > 0 && (
-                            <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteInput(index)}>
-                                <Icon name="delete" size={24} color="red" />
-                            </TouchableOpacity>
-                        )}
+                        <View style={styles.deleteButtonContainer}>
+                            {index > 0 && (
+                                <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteInput(index)}>
+                                    <Icon name="delete" size={30} color="#FF4C50" />
+                                </TouchableOpacity>
+                            )}
+                        </View>
+
                     </View>
                 ))}
 
@@ -331,12 +334,17 @@ const styles = StyleSheet.create({
         alignItems: "center", //virtical
         marginTop: -15,
         flex: 1,
+    
     },
     schuleTimeChild: {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
     },
+    schuleTimeText:{
+        fontSize:22,
+    },
+
     schuleTimeButtonContainer: {
         width: 80,
         height: 30,
@@ -427,6 +435,9 @@ const styles = StyleSheet.create({
         fontSize: 18,
         color: "white",
     },
+    deleteButtonContainer:{
+        justifyContent:"center"
+    }
 
 });
 export default Add
