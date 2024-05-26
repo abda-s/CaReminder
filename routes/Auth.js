@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const bcrypt = require("bcrypt")
-const { sign } = require("jsonwebtoken")
+const { sign, verify } = require("jsonwebtoken")
 
 const { users } = require("../models")
 
@@ -141,7 +141,7 @@ router.post('/login', async (req, res) => {
         }
 
         const isMatch = await bcrypt.compare(password, existingUser.password);
-        
+
         if (!isMatch) {
             return res.json({ error: "Invalid password" });
         }
@@ -157,5 +157,22 @@ router.post('/login', async (req, res) => {
         res.status(500).json({ error: `Failed to sign: ${err.message}` });
 
     }
+})
+
+
+
+router.post('/userdata', async (req, res) => {
+    const { token } = req.body;
+    try{
+        if(!token){
+            return res.json({error:"token does not exist"})
+        }
+        const user = verify(token,JWT_secret)
+        return res.json(user)
+    }catch(err){
+        console.log(err)
+    }
+
+
 })
 module.exports = router;

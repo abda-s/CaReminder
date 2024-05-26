@@ -12,6 +12,9 @@ app.use(cors())
 const AuthsRouter = require("./routes/Auth");
 app.use("/auth", AuthsRouter);
 
+const EventsRouter = require("./routes/events");
+app.use("/events", EventsRouter);
+
 db.sequelize.sync().then(() => {
     app.listen(PORT, () => {
         console.log(`server running on http://localhost:${PORT}`)
