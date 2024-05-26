@@ -1,4 +1,4 @@
-import { View, Text, TextInput, Button, TouchableOpacity, StyleSheet, Platform } from "react-native"
+import { View, Text, TextInput, ScrollView, SafeAreaView, TouchableOpacity, StyleSheet, Platform } from "react-native"
 import { useState, useEffect } from "react"
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -23,15 +23,22 @@ function Add() {
     const navigation = useNavigation();
 
     const [name, setName] = useState("")
+
     const [description, setDescription] = useState("")
+
     const [selectedItems, setSelectedItems] = useState([]);
+
     const [dosage, setDosage] = useState("1");
+
     const [time, setTime] = useState(new Date())
     const [showTime, setShowTime] = useState(false)
     const [timeText, setTimeText] = useState("Empty")
+
     const [date, setDate] = useState(new Date())
     const [showDate, setShowDate] = useState(false)
     const [endDate, setEndDate] = useState("Empty")
+
+    const [inputs, setInputs] = useState([{ time: new Date(), dosage: "1", showTime: false, timeText: "Empty" }]);
 
 
 
@@ -48,190 +55,230 @@ function Add() {
         setEndDate(fDate);
     }
 
-    const onChangeTime = (event, selectedTime) => {
-        const currenTime = selectedTime || time
-        setShowTime(Platform.OS === "ios")
-        setTime(currenTime);
+    const onChangeTime = (index, event, selectedTime) => {
+        const currentTime = selectedTime || inputs[index].time;
+        const newInputs = [...inputs];
+        newInputs[index].showTime = Platform.OS === "ios";
+        newInputs[index].time = currentTime;
 
-        let tempDate = new Date(currenTime);
+        let tempDate = new Date(currentTime);
         let hours = String(tempDate.getHours()).padStart(2, '0'); // Pad hours with leading zero
         let minutes = String(tempDate.getMinutes()).padStart(2, '0'); // Pad minutes with leading zero
         let fTime = hours + ":" + minutes;
-        setTimeText(fTime);
-    }
+        newInputs[index].timeText = fTime;
+
+        setInputs(newInputs);
+    };
+
+    const handleAddInput = () => {
+        setInputs([...inputs, { time: new Date(), dosage: "1", showTime: false, timeText: "Empty" }]);
+    };
+
+    const handleDeleteInput = (index) => {
+        const newInputs = inputs.filter((_, i) => i !== index);
+        setInputs(newInputs);
+    };
 
     const submit = () => {
-        // Map selected IDs to their corresponding names
         const selectedNames = selectedItems.map(id => {
             const item = items.find(item => item.id === id);
             return item ? item.name : null;
-        }).filter(name => name !== null); // Filter out any null values just in case
-        const recurrencePattern = selectedNames.join(',');;
+        }).filter(name => name !== null);
+        const recurrencePattern = selectedNames.join(',');
+
+        const schuleData = inputs.reduce((acc, input) => {
+            acc[input.timeText] = parseInt(input.dosage);
+            return acc;
+        }, {});
+
         const data = {
             title: name,
             description: description,
             recurrencePattern: recurrencePattern,
-            schule: {
-                [timeText]: parseInt(dosage),
-            },
+            schule: schuleData,
             endDate: endDate,
             userId: 4
+        };
 
-        }
         axios
             .post(`${baseUrl}/events`, data)
             .then((response) => {
-                navigation.navigate('Home')
-                console.log(response)
+                navigation.navigate('Home');
+                console.log(response);
             })
             .catch((err) => {
-                console.log(err)
-            })
-    }
+                console.log(err);
+            });
+    };
+
 
     return (
-        <View style={{ flex: 1, backgroundColor: "#ABCDCF" }}>
-
-            <Text style={styles.frequencyText}>Medication name: </Text>
-            <TextInput
-                style={styles.textInput}
-                onChangeText={setName}
-                value={name}
-                placeholder="panadol"
-                keyboardType="default"
-            />
-
-            <Text style={styles.frequencyText}>Description (optional): </Text>
-            <TextInput
-                style={styles.textInput}
-                onChangeText={setDescription}
-                value={description}
-                placeholder="for my eye"
-                keyboardType="default"
-            />
-
-            <Text style={styles.frequencyText}>Frequency: </Text>
-            <View style={styles.container}>
-                <SectionedMultiSelect
-                    items={items}
-                    IconRenderer={Icon}
-                    uniqueKey="id"
-                    onSelectedItemsChange={setSelectedItems}
-                    selectedItems={selectedItems}
-                    hideSearch={true}
-                    selectText="Select days"
-                    colors={{ itemBackground: "#84B0B6", chipColor: "#1B2D31" }}
-                    styles={{
-                        selectToggle: {
-                            backgroundColor: "white",
-                            padding: 10,
-                            borderRadius: 25,
-                            elevation: 5,
-                            marginBottom: 5
-                        },
-                        selectToggleText: {
-                            color: "#1B2D31"
-                        },
-                        item: {
-                            paddingHorizontal: 20,
-                            marginVertical: 10,
-                            borderRadius: 20,
-                            backgroundColor: "white",
-                            elevation: 5,
-                        },
-                        container: {
-                            backgroundColor: "#84B0B6",
-                            borderRadius: 20,
-                            padding: 20,
-                            marginVertical: 180,
-                        },
-                        scrollView: {
-                            borderRadius: 20,
-                        },
-                        button: {
-                            borderRadius: 30,
-                            backgroundColor: "#F5DFC7",
-                            elevation: 5,
-                        },
-                        confirmText: {
-                            color: "#1B2D31"
-                        }
-                    }}
+        <SafeAreaView style={{ flex: 1, backgroundColor: "#ABCDCF" }}>
+            <ScrollView>
+                <Text style={styles.frequencyText}>Medication name: </Text>
+                <TextInput
+                    style={styles.textInput}
+                    onChangeText={setName}
+                    value={name}
+                    placeholder="panadol"
+                    keyboardType="default"
                 />
-            </View>
 
-            <Text style={styles.frequencyText}>Schule: </Text>
-            <View style={styles.schuleContainer}>
-                <View style={styles.schuleChild}>
-                    <Text style={styles.schuleTitles}>Select time:</Text>
-                    <View View style={styles.schuleTimeContainer}>
-                        <View style={styles.schuleTimeChild}>
-                            <TouchableOpacity style={styles.schuleTimeButtonContainer} onPress={() => { setShowTime(true) }}>
-                                <Text style={styles.schuleTimeButtonText} >Select</Text>
+                <Text style={styles.frequencyText}>Description (optional): </Text>
+                <TextInput
+                    style={styles.textInput}
+                    onChangeText={setDescription}
+                    value={description}
+                    placeholder="for my eye"
+                    keyboardType="default"
+                />
+
+                <Text style={styles.frequencyText}>Frequency: </Text>
+                <View style={styles.container}>
+                    <SectionedMultiSelect
+                        items={items}
+                        IconRenderer={Icon}
+                        uniqueKey="id"
+                        onSelectedItemsChange={setSelectedItems}
+                        selectedItems={selectedItems}
+                        hideSearch={true}
+                        selectText="Select days"
+                        colors={{ itemBackground: "#84B0B6", chipColor: "#1B2D31" }}
+                        styles={{
+                            selectToggle: {
+                                backgroundColor: "white",
+                                padding: 10,
+                                borderRadius: 25,
+                                elevation: 5,
+                                marginBottom: 5
+                            },
+                            selectToggleText: {
+                                color: "#1B2D31"
+                            },
+                            item: {
+                                paddingHorizontal: 20,
+                                marginVertical: 10,
+                                borderRadius: 20,
+                                backgroundColor: "white",
+                                elevation: 5,
+                            },
+                            container: {
+                                backgroundColor: "#84B0B6",
+                                borderRadius: 20,
+                                padding: 20,
+                                marginVertical: 180,
+                            },
+                            scrollView: {
+                                borderRadius: 20,
+                            },
+                            button: {
+                                borderRadius: 30,
+                                backgroundColor: "#F5DFC7",
+                                elevation: 5,
+                            },
+                            confirmText: {
+                                color: "#1B2D31"
+                            }
+                        }}
+                    />
+                </View>
+
+
+
+                <Text style={styles.frequencyText}>Schule: </Text>
+                {inputs.map((input, index) => (
+                    <View key={index} style={styles.schuleContainer}>
+                        <View style={styles.schuleChild}>
+                            <Text style={styles.schuleTitles}>Select time:</Text>
+                            <View style={styles.schuleTimeContainer}>
+                                <View style={styles.schuleTimeChild}>
+                                    <TouchableOpacity style={styles.schuleTimeButtonContainer} onPress={() => {
+                                        const newInputs = [...inputs];
+                                        newInputs[index].showTime = true;
+                                        setInputs(newInputs);
+                                    }}>
+                                        <Text style={styles.schuleTimeButtonText}>Select</Text>
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={styles.schuleTimeChild}>
+                                    <Text style={styles.endDateText}>{input.timeText}</Text>
+                                </View>
+                            </View>
+                            {input.showTime && (
+                                <DateTimePicker
+                                    testID="dateTimePicker"
+                                    value={input.time}
+                                    mode="time"
+                                    is24Hour={false}
+                                    display="default"
+                                    onChange={(event, selectedTime) => onChangeTime(index, event, selectedTime)}
+                                />
+                            )}
+                        </View>
+                        <View style={styles.schuleChild}>
+                            <Text style={styles.schuleTitles}>Dosage:</Text>
+                            <TextInput
+                                style={[styles.textInput, styles.schuleTextInput]}
+                                onChangeText={(text) => {
+                                    const newInputs = [...inputs];
+                                    newInputs[index].dosage = text;
+                                    setInputs(newInputs);
+                                }}
+                                value={input.dosage}
+                                placeholder="1"
+                                keyboardType="number-pad"
+                            />
+                        </View>
+                        {index > 0 && (
+                            <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteInput(index)}>
+                                <Icon name="delete" size={24} color="red" />
                             </TouchableOpacity>
-                        </View>
-                        <View style={styles.schuleTimeChild}>
-                            <Text style={styles.endDateText} >{timeText}</Text>
-                        </View>
+                        )}
                     </View>
-                    {showTime && (
+                ))}
+
+                <View style={{ alignItems: 'center', marginBottom: 20 }}>
+                    <TouchableOpacity style={styles.addButtonContainer} onPress={handleAddInput}>
+                        <Text style={styles.addButtonText}>Add</Text>
+                    </TouchableOpacity>
+                </View>
+
+
+
+                <Text style={styles.frequencyText}>End Date: </Text>
+                <View style={styles.endDateContainer}>
+                    <View style={styles.endDateChild}>
+                        <DropShadow style={styles.buttonShadow}>
+                            <TouchableOpacity style={styles.buttonContainer} onPress={() => { setShowDate(true) }}>
+                                <Text style={styles.buttonText} >Select</Text>
+                            </TouchableOpacity>
+                        </DropShadow>
+                    </View>
+                    <View style={styles.endDateChild}>
+                        <Text style={styles.endDateText} >{endDate}</Text>
+                    </View>
+
+                    {showDate && (
                         <DateTimePicker
                             testID="dateTimePicker"
-                            value={time}
-                            mode="time"
+                            value={date}
+                            mode="date"
                             is24Hour={false}
                             display="default"
-                            onChange={onChangeTime}
+                            onChange={onChangeDate}
                         />
                     )}
                 </View>
-                <View style={styles.schuleChild}>
-                    <Text style={styles.schuleTitles}>Dosage:</Text>
-                    <TextInput
-                        style={[styles.textInput, styles.schuleTextInput]}
-                        onChangeText={setDosage}
-                        value={dosage}
-                        placeholder="1"
-                        keyboardType="number-pad"
-                    />
-                </View>
-            </View>
 
-
-
-            <Text style={styles.frequencyText}>End Date: </Text>
-            <View style={styles.endDateContainer}>
-                <View style={styles.endDateChild}>
+                <View style={styles.doneContainer} >
                     <DropShadow style={styles.buttonShadow}>
-                        <TouchableOpacity style={styles.buttonContainer} onPress={() => { setShowDate(true) }}>
-                            <Text style={styles.buttonText} >Select</Text>
+                        <TouchableOpacity style={styles.DoneButtonContainer} onPress={() => { submit() }}>
+                            <Text style={styles.DoneButtonText} >Done</Text>
                         </TouchableOpacity>
                     </DropShadow>
                 </View>
-                <View style={styles.endDateChild}>
-                    <Text style={styles.endDateText} >{endDate}</Text>
-                </View>
-
-                {showDate && (
-                    <DateTimePicker
-                        testID="dateTimePicker"
-                        value={date}
-                        mode="date"
-                        is24Hour={false}
-                        display="default"
-                        onChange={onChangeDate}
-                    />
-                )}
-            </View>
-
-            <View style={styles.doneContainer} >
-                <DropShadow style={styles.buttonShadow}>
-                    <TouchableOpacity style={styles.DoneButtonContainer} onPress={() => { submit() }}>
-                        <Text style={styles.DoneButtonText} >Done</Text>
-                    </TouchableOpacity>
-                </DropShadow>
-            </View>
-        </View>
+            </ScrollView>
+        </SafeAreaView>
     )
 }
 const styles = StyleSheet.create({
@@ -266,8 +313,6 @@ const styles = StyleSheet.create({
     schuleChild: {
         flex: 1,
         justifyContent: "center",
-
-
     },
     schuleTextInput: {
         marginBottom: 15,
@@ -367,8 +412,21 @@ const styles = StyleSheet.create({
     DoneButtonText: {
         fontSize: 30,
         color: "#1B2D31"
-
-    }
+    },
+    addButtonContainer: {
+        width: 80,
+        height: 40,
+        backgroundColor: "#84B0B6",
+        borderRadius: 20,
+        alignItems: "center", // vertical
+        justifyContent: "center", // horizontal
+        elevation: 5,
+        marginTop: 10,
+    },
+    addButtonText: {
+        fontSize: 18,
+        color: "white",
+    },
 
 });
 export default Add
