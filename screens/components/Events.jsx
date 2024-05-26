@@ -11,7 +11,7 @@ const Events = ({ data }) => {
                         key={index}
                         title={event.title}
                         startTime={event.startTime}
-                        lable={"After Lunch"}
+                        lable="After Lunch"
                         done={"false"}
                     />
                 ))}
