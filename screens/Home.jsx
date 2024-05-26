@@ -4,7 +4,9 @@ import axios from 'axios';
 import { AuthContext } from "../helpers/AuthContext";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import Clock from './components/Clock';
+import Navbar from './components/Navbar';
+import Events from './components/Events';
+import AddButton from './components/AddButton';
 const baseUrl = 'http://10.0.2.2:3001';
 
 const App = () => {
@@ -12,6 +14,7 @@ const App = () => {
     const [username, setUsername] = useState('')
     const [email, setEmail] = useState('')
     const { setIsSignedIn } = useContext(AuthContext);
+    const [data,setData]=useState([])
 
 
     useEffect(() => {
@@ -32,6 +35,11 @@ const App = () => {
                 console.error('Error fetching the token:', error);
             }
         };
+        axios.get(`${baseUrl}/events`).then((response)=>{
+            setData(response.data)
+            console.log(response.data)
+            console.log("fuck")
+        })
 
         fetchToken();
     }, []);
@@ -40,17 +48,18 @@ const App = () => {
         setIsSignedIn(false)
     }
     return (
-        <View>
-            <Clock />
-            <Text>username: {username}</Text>
+        <View style={{backgroundColor:"#aaccce",flex:1}} >
+            <Navbar/>
+            {/* <Text>username: {username}</Text>
             <Text>email:{email} </Text>
             <Button
                 onPress={signout}
                 title="sginout"
                 color="#f24"
                 accessibilityLabel="Learn more about this purple button"
-            />
-
+            /> */}
+            <Events data={data} />
+            <AddButton />
 
         </View>
     );

@@ -15,8 +15,11 @@ import { AuthContext } from "./helpers/AuthContext";
 import Signup from './screens/Signup';
 import Signin from './screens/Signin';
 import Home from './screens/Home';
+import Add from './screens/Add';
+import { View } from 'react-native';
 
 const Stack = createNativeStackNavigator();
+
 
 export const App = () => {
   const [isSignedIn, setIsSignedIn] = useState(false)
@@ -48,11 +51,14 @@ export const App = () => {
 
 
   return (
-    <AuthContext.Provider value={{isSignedIn, setIsSignedIn}}>
-      <NavigationContainer>
+    <AuthContext.Provider value={{ isSignedIn, setIsSignedIn }}>
+      <NavigationContainer  >
         <Stack.Navigator >
           {isSignedIn ? (
-            <Stack.Screen name="Home" component={Home} />
+            <>
+              <Stack.Screen name="Home" component={Home} />
+              <Stack.Screen name="Add" component={Add} />
+            </>
           ) : (
             <>
               <Stack.Screen name="Signin" component={Signin} />
@@ -64,6 +70,7 @@ export const App = () => {
         </Stack.Navigator>
       </NavigationContainer>
     </AuthContext.Provider>
+
   )
 }
 
