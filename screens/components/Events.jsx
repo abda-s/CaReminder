@@ -1,18 +1,20 @@
 import React from 'react';
 import { ScrollView, SafeAreaView, StyleSheet } from 'react-native';
-import EventView from './EventView';
+import MainEventView from './MainEventView';
 
 const Events = ({ data }) => {
     return (
         <SafeAreaView style={{flex:1}}>
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
                 {data.map((event, index) => (
-                    <EventView
+                    <MainEventView
                         key={index}
                         title={event.title}
                         startTime={event.startTime}
-                        lable="After Lunch"
-                        done={"false"}
+                        description={event.description}
+                        endDate={event.endDate}
+                        recurrencePattern={event.recurrencePattern}
+
                     />
                 ))}
             </ScrollView>

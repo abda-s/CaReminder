@@ -1,6 +1,7 @@
 import { View, StyleSheet } from "react-native"
 import Clock from "./Clock"
 import CalendarButton from "./CalendarButton";
+import CalendarButton2 from "./CalendarButton2";
 function Navbar() {
   return (
     <View style={styles.container} >
@@ -14,7 +15,7 @@ function Navbar() {
       </View>
 
       <View style={styles.child}>
-        <CalendarButton />
+        <CalendarButton2 />
       </View>
 
     </View>

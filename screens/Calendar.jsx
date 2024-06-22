@@ -1,6 +1,7 @@
 import React, { useRef, useCallback, useState, useEffect } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { AgendaList, CalendarProvider, WeekCalendar } from 'react-native-calendars';
+import DropShadow from "react-native-drop-shadow";
 import axios from 'axios';
 import dayjs from 'dayjs'
 import EventView from './components/EventView';
@@ -65,8 +66,8 @@ const Calendar = () => {
                     date={today}
                     showTodayButton
                     theme={{
-                        todayBackgroundColor:"#84B0B6",
-                        todayButtonTextColor:"black"
+                        todayBackgroundColor: "#84B0B6",
+                        todayButtonTextColor: "black"
                     }}
                 >
                     <WeekCalendar
@@ -78,18 +79,18 @@ const Calendar = () => {
                             textSectionTitleColor: 'balck',
                             dayTextColor: 'black',
                             todayTextColor: '#638488',
-
                             selectedDayBackgroundColor: '#ABCDCF',
                             selectedDayTextColor: 'white',
                             monthTextColor: 'black'
                         }}
+
                     />
-                    <View style={{ flex: 1, backgroundColor: '#ABCDCF' ,alignItems:"center"}}>
+                    <View style={{ flex: 1, backgroundColor: '#ABCDCF', alignItems: "center" }}>
                         <AgendaList
                             sections={agendaItems}
                             renderItem={renderItem}
                             sectionStyle={styles.section}
-                            style={{ backgroundColor: "balck",flex:1 }}
+                            style={{ flex: 1 }}
                             theme={{
                                 calendarBackground: "black",
                                 todayBackgroundColor: "black",

@@ -14,7 +14,7 @@ const App = () => {
     const [username, setUsername] = useState('')
     const [email, setEmail] = useState('')
     const { setIsSignedIn } = useContext(AuthContext);
-    const [data,setData]=useState([])
+    const [data, setData] = useState([])
 
 
     useEffect(() => {
@@ -35,21 +35,24 @@ const App = () => {
                 console.error('Error fetching the token:', error);
             }
         };
-        axios.get(`${baseUrl}/events`).then((response)=>{
-            setData(response.data)
-            console.log(response.data)
-            console.log("fuck")
-        })
 
-        fetchToken();
+
+        setInterval(() => {
+            axios.get(`${baseUrl}/events`).then((response) => {
+                setData(response.data)
+                console.log(response.data)
+                console.log("fuck")
+            })          }, 1000 * 1)
+
+            fetchToken();
     }, []);
     const signout = async () => {
         await AsyncStorage.removeItem('token')
         setIsSignedIn(false)
     }
     return (
-        <View style={{backgroundColor:"#aaccce",flex:1}} >
-            <Navbar/>
+        <View style={{ backgroundColor: "#aaccce", flex: 1 }} >
+            <Navbar />
             {/* <Text>username: {username}</Text>
             <Text>email:{email} </Text>
             <Button

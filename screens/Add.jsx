@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import DropShadow from "react-native-drop-shadow";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useNavigation } from '@react-navigation/native';
+import moment from "moment";
 
 import axios from 'axios';
 const baseUrl = 'http://10.0.2.2:3001';
@@ -12,8 +13,8 @@ const baseUrl = 'http://10.0.2.2:3001';
 const items = [
     { name: 'Sun', id: 1 },
     { name: 'Mon', id: 2 },
-    { name: 'Tus', id: 3 },
-    { name: 'Wid', id: 4 },
+    { name: 'Tue', id: 3 },
+    { name: 'Wed', id: 4 },
     { name: 'Thu', id: 5 },
     { name: 'Fri', id: 6 },
     { name: 'Sat', id: 7 },
@@ -28,11 +29,9 @@ function Add() {
 
     const [selectedItems, setSelectedItems] = useState([]);
 
-    const [dosage, setDosage] = useState("1");
+    const [container, setContainer] = useState("")
+    const [snooze, setSnooze] = useState("")
 
-    const [time, setTime] = useState(new Date())
-    const [showTime, setShowTime] = useState(false)
-    const [timeText, setTimeText] = useState("Empty")
 
     const [date, setDate] = useState(new Date())
     const [showDate, setShowDate] = useState(false)
@@ -79,6 +78,14 @@ function Add() {
         setInputs(newInputs);
     };
 
+    let errorText = 'Fill these fields:'
+
+    const checkFields = (field, name) => {
+        if (field == "") {
+            errorText += name;
+        }
+    }
+
     const submit = () => {
         const selectedNames = selectedItems.map(id => {
             const item = items.find(item => item.id === id);
@@ -91,12 +98,28 @@ function Add() {
             return acc;
         }, {});
 
+        function formatSnoozeTime(snooze) {
+            // Convert snooze string to integer
+            const snoozeMinutes = parseInt(snooze, 10);
+            
+            // Create a moment duration object
+            const snoozeDuration = moment.duration(snoozeMinutes, 'minutes');
+            
+            // Format the duration as hh:mm
+            const formattedTime = moment.utc(snoozeDuration.asMilliseconds()).format('HH:mm');
+            
+            return formattedTime;
+        }
+        
+        
         const data = {
             title: name,
             description: description,
             recurrencePattern: recurrencePattern,
             schule: schuleData,
             endDate: endDate,
+            snooze: formatSnoozeTime(snooze),
+            container: container,
             userId: 4
         };
 
@@ -120,7 +143,7 @@ function Add() {
                     style={styles.textInput}
                     onChangeText={setName}
                     value={name}
-                    placeholder="panadol"
+                    placeholder=""
                     keyboardType="default"
                 />
 
@@ -129,9 +152,29 @@ function Add() {
                     style={styles.textInput}
                     onChangeText={setDescription}
                     value={description}
-                    placeholder="for my eye"
+                    placeholder=""
                     keyboardType="default"
                 />
+
+
+                <Text style={styles.frequencyText}>Container number: </Text>
+                <TextInput
+                    style={styles.textInput}
+                    onChangeText={setContainer}
+                    value={container}
+                    placeholder=""
+                    keyboardType="number-pad"
+                />
+
+                <Text style={styles.frequencyText}>Snooze Time in (min): </Text>
+                <TextInput
+                    style={styles.textInput}
+                    onChangeText={setSnooze}
+                    value={snooze}
+                    placeholder=""
+                    keyboardType="number-pad"
+                />
+
 
                 <Text style={styles.frequencyText}>Frequency: </Text>
                 <View style={styles.container}>
@@ -201,7 +244,7 @@ function Add() {
                                     </TouchableOpacity>
                                 </View>
                                 <View style={styles.schuleTimeChild}>
-                                    <Text style={[styles.endDateText,styles.schuleTimeText]}>{input.timeText}</Text>
+                                    <Text style={[styles.endDateText, styles.schuleTimeText]}>{input.timeText}</Text>
                                 </View>
                             </View>
                             {input.showTime && (
@@ -232,7 +275,7 @@ function Add() {
                         <View style={styles.deleteButtonContainer}>
                             {index > 0 && (
                                 <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteInput(index)}>
-                                    <Icon name="delete" size={30} color="#FF4C50" />
+                                    <Icon name="delete" size={30} color="#84B0B6" />
                                 </TouchableOpacity>
                             )}
                         </View>
@@ -334,15 +377,15 @@ const styles = StyleSheet.create({
         alignItems: "center", //virtical
         marginTop: -15,
         flex: 1,
-    
+
     },
     schuleTimeChild: {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
     },
-    schuleTimeText:{
-        fontSize:22,
+    schuleTimeText: {
+        fontSize: 22,
     },
 
     schuleTimeButtonContainer: {
@@ -435,8 +478,8 @@ const styles = StyleSheet.create({
         fontSize: 18,
         color: "white",
     },
-    deleteButtonContainer:{
-        justifyContent:"center"
+    deleteButtonContainer: {
+        justifyContent: "center"
     }
 
 });

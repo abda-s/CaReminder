@@ -3,21 +3,21 @@ import DropShadow from "react-native-drop-shadow";
 import moment from 'moment';
 import CheckBox from "@react-native-community/checkbox"
 
-const EventView = ({ title, startTime, done, lable }) => {
+const EventView = ({ title, startTime }) => {
     const formattedTime = moment(startTime, 'HH:mm:ss').format('hh:mm A');
     return (
         <DropShadow style={styles.comonProp}>
             <View style={styles.container}>
                 <View style={styles.child}>
-                    <Text style={styles.title} >{title}</Text>
+                    <View style={styles.timecon}>
+                        <CheckBox style={styles.CheckBox} />
+                        <Text style={styles.title} >{title}</Text>
+                    </View>
                 </View>
 
                 <View style={styles.child}>
-                    <Text style={styles.lable} >{lable}</Text>
-                    <View style={styles.timecon}>
-                        <Text style={styles.time} >{formattedTime}</Text>
-                        <CheckBox />
-                    </View>
+                    {/* <Text style={styles.lable} >{lable}</Text> */}
+                    <Text style={styles.time} >{formattedTime}</Text>
                 </View>
             </View>
         </DropShadow>
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
         margin: 10,
         borderRadius: 30,
         flexDirection: "row",
-        
+
 
         // elevation: 5,
 
@@ -53,19 +53,29 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.5,
         shadowRadius: 2
     },
-    timecon:{
-        flexDirection:"row",
-        alignItems: 'center'
+    timecon: {
+        flexDirection: "row",
+        alignItems: 'center',
+        justifyContent: "center"
     },
-    lable:{
-        backgroundColor:"#F5DFC7",
-        fontSize:18,
-        fontWeight:"400",
-        color:"#1B2D31",
-        paddingHorizontal:8,
-        borderRadius:39,
-        borderWidth:1,
-        marginTop:5,
+    CheckBox: {
+        padding: 0,
+        margin: 0,
+        // backgroundColor:"black",
+        flex:1,
+        justifyContent:"flex-start",
+        marginLeft:10,
+
+    },
+    lable: {
+        backgroundColor: "#F5DFC7",
+        fontSize: 18,
+        fontWeight: "400",
+        color: "#1B2D31",
+        paddingHorizontal: 8,
+        borderRadius: 39,
+        borderWidth: 1,
+        marginTop: 5,
     },
     titleCon: {
         backgroundColor: "white"
@@ -78,7 +88,12 @@ const styles = StyleSheet.create({
     time: {
         color: "#1B2D31",
         fontWeight: "400",
-        fontSize: 20,
+        fontSize: 22,
+        backgroundColor:"#F5DFC7",
+        padding:5,
+        borderRadius:10,
+        borderWidth:2,
+        borderColor:"black"
     },
 
 
