@@ -1,14 +1,16 @@
 import { View, Text, TextInput, ScrollView, SafeAreaView, TouchableOpacity, Alert, StyleSheet, Platform } from "react-native"
-import { useState, useEffect } from "react"
+import { useState, useContext } from "react"
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import DropShadow from "react-native-drop-shadow";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useNavigation } from '@react-navigation/native';
+import { BaseUrlContext } from '../helpers/BaseUrlContext';
+
+
 import moment from "moment";
 
 import axios from 'axios';
-const baseUrl = 'http://10.0.2.2:3001';
 
 const items = [
     { name: 'Sun', id: 1 },
@@ -21,6 +23,8 @@ const items = [
 ];
 
 function Add() {
+    const { baseUrl } = useContext(BaseUrlContext);
+
     const navigation = useNavigation();
 
     const [name, setName] = useState("")
@@ -78,10 +82,9 @@ function Add() {
         setInputs(newInputs);
     };
 
-    let errorText = 'Fill these fields:'
-
     const checkFields = () => {
         let errorText = 'Fill these fields:';
+        const today = moment(); // Get today's date
 
         if (name === "") {
             errorText += "\nMedication name";
@@ -102,6 +105,11 @@ function Add() {
         }
         if (endDate === "Empty") {
             errorText += "\nEnd Date";
+        } else {
+            const endDateMoment = moment(endDate);
+            if (!endDateMoment.isValid() || endDateMoment.isBefore(today, 'day')) {
+                errorText += "\nEnd Date must be equal to or later than today";
+            }
         }
         if (errorText !== 'Fill these fields:') {
             Alert.alert('Empty Fields', errorText);

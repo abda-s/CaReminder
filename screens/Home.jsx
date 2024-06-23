@@ -3,13 +3,16 @@ import { View, Text, Button } from 'react-native';
 import axios from 'axios';
 import { AuthContext } from "../helpers/AuthContext";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {BaseUrlContext} from "../helpers/BaseUrlContext"
 
 import Navbar from './components/Navbar';
 import Events from './components/Events';
 import AddButton from './components/AddButton';
-const baseUrl = 'http://10.0.2.2:3001';
+
+// const baseUrl = 'http://10.0.2.2:3001';
 
 const App = () => {
+    const { baseUrl} = useContext(BaseUrlContext);
 
     const [username, setUsername] = useState('')
     const [email, setEmail] = useState('')

@@ -1,7 +1,7 @@
-import React, { useRef, useCallback, useState, useEffect } from 'react';
+import React, { useRef, useCallback, useState, useEffect ,useContext} from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { AgendaList, CalendarProvider, WeekCalendar } from 'react-native-calendars';
-import DropShadow from "react-native-drop-shadow";
+import { BaseUrlContext } from '../helpers/BaseUrlContext';
 import axios from 'axios';
 import dayjs from 'dayjs'
 import EventView from './components/EventView';
@@ -10,9 +10,10 @@ import { LogBox } from 'react-native';
 LogBox.ignoreLogs(['ReactImageView: Image source "null" doesn\'t exist']);
 
 
-const baseUrl = 'http://10.0.2.2:3001';
 
 const Calendar = () => {
+    const { baseUrl } = useContext(BaseUrlContext);
+
     const today = dayjs().format("YYYY-MM-DD")
 
     const [events, setEvents] = useState({});
@@ -108,7 +109,7 @@ const Calendar = () => {
 const styles = StyleSheet.create({
     section: {
         backgroundColor: '#ABCDCF',
-        color: 'black',
+        color: '#000',
         textTransform: 'capitalize',
         padding: 10,
         fontSize: 20,

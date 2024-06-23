@@ -1,10 +1,12 @@
 import { View, Text, StyleSheet,Alert, TouchableOpacity } from "react-native"
 import DropShadow from "react-native-drop-shadow";
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { BaseUrlContext } from "../../helpers/BaseUrlContext"
+import {useContext} from "react"
 import moment from 'moment';
 
 import axios from 'axios';
-const baseUrl = 'http://10.0.2.2:3001';
+
 
 const Day = ({ days }) => {
 
@@ -49,6 +51,8 @@ const Day = ({ days }) => {
 
 
 const MainEventView = ({ title, description, recurrencePattern, endDate, id }) => {
+    const { baseUrl } = useContext(BaseUrlContext);
+
     const endDateFormatted = moment(endDate, 'YYYY-MM-DD').format('YYYY, MMMM D');
     const days = recurrencePattern.split(",")
 
