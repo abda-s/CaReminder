@@ -1,9 +1,13 @@
-import { View, Text, StyleSheet } from "react-native"
+import { View, Text, StyleSheet,Alert, TouchableOpacity } from "react-native"
 import DropShadow from "react-native-drop-shadow";
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import moment from 'moment';
 
+import axios from 'axios';
+const baseUrl = 'http://10.0.2.2:3001';
+
 const Day = ({ days }) => {
-    console.log(days);
+
 
     if (days.length === 7) {
         return (
@@ -31,22 +35,55 @@ const Day = ({ days }) => {
             <View style={styles.daysCon}>
 
                 {days.length > 3 && (
-                        secondLine.map((day, index) => (
-                            <View style={styles.dayCon} key={index}>
-                                <Text style={styles.dayText}>
-                                    {day}
-                                </Text>
-                            </View>
-                        )))}
+                    secondLine.map((day, index) => (
+                        <View style={styles.dayCon} key={index}>
+                            <Text style={styles.dayText}>
+                                {day}
+                            </Text>
+                        </View>
+                    )))}
             </View>
         </View>
     );
 };
 
 
-const MainEventView = ({ title, description, recurrencePattern, endDate }) => {
+const MainEventView = ({ title, description, recurrencePattern, endDate, id }) => {
     const endDateFormatted = moment(endDate, 'YYYY-MM-DD').format('YYYY, MMMM D');
     const days = recurrencePattern.split(",")
+
+    const deleteEvent = () => {
+        Alert.alert(
+            "Delete Event",
+            "Are you sure you want to delete this event?",
+            [
+                {
+                    text: "Cancel",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                {
+                    text: "OK",
+                    onPress: () => {
+                        console.log(id); // Ensure id is defined and logged correctly
+    
+                        axios
+                            .delete(`${baseUrl}/events/delete/${id}`)
+                            .then((response) => {
+                                console.log("------------------------")
+                                console.log(response.data);
+                                console.log("------------------------")
+                            })
+                            .catch((err) => {
+                                console.log(err);
+                            });
+                    }
+                }
+            ],
+            { cancelable: false }
+        );
+    };
+
 
     return (
         <DropShadow style={styles.comonProp}>
@@ -63,6 +100,11 @@ const MainEventView = ({ title, description, recurrencePattern, endDate }) => {
 
                     <Day days={days} />
                 </View>
+
+                <TouchableOpacity onPress={deleteEvent}>
+                    <Icon name="highlight-off" size={30} color="#84B0B6" style={{marginRight:10}} />
+                </TouchableOpacity>
+
             </View>
         </DropShadow>
 
@@ -142,8 +184,8 @@ const styles = StyleSheet.create({
 
     daysCon: {
         flexDirection: "row",
-        marginTop:3,
-        justifyContent:"flex-start"
+        marginTop: 3,
+        justifyContent: "flex-start"
     },
     dayCon: {
         padding: 2,
@@ -154,15 +196,15 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         flexDirection: 'row',
         flexWrap: 'wrap',  // Allows wrapping to new lines
-        backgroundColor:"#F5DFC7",
+        backgroundColor: "#F5DFC7",
     },
     dayText: {
         fontSize: 13,
         color: '#333',
     },
-    endDateText:{
-        fontSize:18,
-        color:"black"
+    endDateText: {
+        fontSize: 18,
+        color: "black"
     },
 
 });

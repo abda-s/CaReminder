@@ -14,6 +14,7 @@ const Events = ({ data }) => {
                         description={event.description}
                         endDate={event.endDate}
                         recurrencePattern={event.recurrencePattern}
+                        id={event.id}
 
                     />
                 ))}

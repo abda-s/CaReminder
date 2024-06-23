@@ -1,4 +1,4 @@
-import { View, Text, TextInput, ScrollView, SafeAreaView, TouchableOpacity, StyleSheet, Platform } from "react-native"
+import { View, Text, TextInput, ScrollView, SafeAreaView, TouchableOpacity, Alert, StyleSheet, Platform } from "react-native"
 import { useState, useEffect } from "react"
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -80,13 +80,43 @@ function Add() {
 
     let errorText = 'Fill these fields:'
 
-    const checkFields = (field, name) => {
-        if (field == "") {
-            errorText += name;
+    const checkFields = () => {
+        let errorText = 'Fill these fields:';
+
+        if (name === "") {
+            errorText += "\nMedication name";
         }
+        if (container === "") {
+            errorText += "\nContainer number";
+        } else if (parseInt(container) < 1 || parseInt(container) > 4) {
+            errorText += "\nContainer number must be between 1 and 4";
+        }
+        if (snooze === "") {
+            errorText += "\nSnooze Time in (min)";
+        }
+        if (selectedItems.length === 0) {
+            errorText += "\nFrequency";
+        }
+        if (inputs.some(input => input.timeText === "Empty")) {
+            errorText += "\nSchule (Select time)";
+        }
+        if (endDate === "Empty") {
+            errorText += "\nEnd Date";
+        }
+        if (errorText !== 'Fill these fields:') {
+            Alert.alert('Empty Fields', errorText);
+            return false; // Return false to indicate form is not valid
+        }
+        return true; // Return true to indicate form is valid
     }
 
+
     const submit = () => {
+
+        if (!checkFields()) {
+            return; // Exit submit function if fields are empty
+        }
+
         const selectedNames = selectedItems.map(id => {
             const item = items.find(item => item.id === id);
             return item ? item.name : null;
@@ -101,17 +131,17 @@ function Add() {
         function formatSnoozeTime(snooze) {
             // Convert snooze string to integer
             const snoozeMinutes = parseInt(snooze, 10);
-            
+
             // Create a moment duration object
             const snoozeDuration = moment.duration(snoozeMinutes, 'minutes');
-            
+
             // Format the duration as hh:mm
             const formattedTime = moment.utc(snoozeDuration.asMilliseconds()).format('HH:mm');
-            
+
             return formattedTime;
         }
-        
-        
+
+
         const data = {
             title: name,
             description: description,
@@ -126,14 +156,17 @@ function Add() {
         axios
             .post(`${baseUrl}/events`, data)
             .then((response) => {
-                navigation.navigate('Home');
-                console.log(response);
+                console.log(response.data);
+                if (!response.data.error) {
+                    navigation.navigate('Home');
+                } else {
+                    Alert.alert('Change container', response.data.error);
+                }
             })
             .catch((err) => {
                 console.log(err);
             });
     };
-
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#ABCDCF" }}>

@@ -108,11 +108,10 @@ const Calendar = () => {
 const styles = StyleSheet.create({
     section: {
         backgroundColor: '#ABCDCF',
-        color: 'grey',
+        color: 'black',
         textTransform: 'capitalize',
         padding: 10,
         fontSize: 20,
-        color: "black",
     },
 });
 

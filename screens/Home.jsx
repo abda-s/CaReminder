@@ -40,8 +40,6 @@ const App = () => {
         setInterval(() => {
             axios.get(`${baseUrl}/events`).then((response) => {
                 setData(response.data)
-                console.log(response.data)
-                console.log("fuck")
             })          }, 1000 * 1)
 
             fetchToken();
