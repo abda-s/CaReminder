@@ -1,0 +1,67 @@
+{
+    "version": 0,
+    "model_name": "cube.SLDASM",
+    "project_name": "Project(1)",
+    "config_name": "Default",
+    "project_path": "C:\\Users\\3adas\\Desktop\\eng design\\project\\solid\\base\\insid_cube\\1\\1.xmlconfig",
+    "finished": true,
+    "mesh": {
+        "cells_total": 43430,
+        "cells_fluid": 43430,
+        "cells_solid": 1407,
+        "cells_fluid_containing_solid": 1913
+    },
+    "telemetry": {
+        "prepare_geometry_finished": "19:03:03+0300",
+        "prepare_geometry_total_time": 1,
+        "cpu_time_solver_total": 56,
+        "iteration": 129,
+        "travel": 1.8349734000545843,
+        "phys_time": 0.0,
+        "time_step": 0.0,
+        "last_iteration_finished": "19:03:56+0300",
+        "cpu_time_per_last_iter": 0,
+        "cpu_time_left": 4,
+        "iterations_per_travel": 71
+    },
+    "goals": [
+        {
+            "goal": {
+                "name": "GG Average Total Temperature 1",
+                "unit": "temperature",
+                "value": 313.05634821990566,
+                "progress": 100.0,
+                "criteria": 0.00014119277372913073,
+                "delta": 0.0001368829577472752,
+                "use_in_convergence": true
+            }
+        }
+    ],
+    "settings": {
+        "default_fluids": [
+            "Air"
+        ],
+        "analysis_type": "external",
+        "heat_conduction_in_solids": false,
+        "radiation": false,
+        "time_dependent": false,
+        "gravity": true,
+        "flow_type": "laminar and turbulent",
+        "cavitation": false,
+        "high_mach_number": true,
+        "free_surface": false,
+        "structural": false,
+        "electromagnetism": false
+    },
+    "system_info": {
+        "product_name": "Flow Simulation 2023  x64 / 5726 / SOLVER ver. efd_dev.5608_04.02.2022+HMN_Inlet_Rework_V1+HMN_Inlet_Rework_V2",
+        "cad_version": "SOLIDWORKS 2023 SP0.1",
+        "computer_name": "DESKTOP-86M6504",
+        "user_name": "3adas",
+        "os": "Windows 11 (or higher) (Version 10.0.22631)",
+        "cpu": "Intel(R) Core(TM) i5-10500H CPU @ 2.50GHz",
+        "number_of_cores": 12,
+        "memory_avail": 4645,
+        "memory_total": 16206
+    }
+}

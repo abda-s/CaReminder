@@ -1,0 +1,7 @@
+2024-Jun-02 19:03:56
+Computer name:	DESKTOP-86M6504
+Number of cores used in calculation:	12
+Configuration name:	Default
+Project name:	Project(1)
+
+Warnings on last iteration: 
